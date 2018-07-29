@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
-import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory from 'react-bootstrap-table2-filter';
-import {columns, accs} from './acc_table';
+// import BootstrapTable from 'react-bootstrap-table-next';
+// import filterFactory from 'react-bootstrap-table2-filter';
+// import {columns, accs} from './acc_table';
 // import '.acc_table.css'
+import TableComp from './TableComp';
 
 class Operations extends Component {
+
+
 
     constructor(props) {
         super(props);
@@ -25,6 +28,7 @@ class Operations extends Component {
 
     render() {
 
+        // const table = {TableComp.};
         let accNum = <input type="text" placeholder="Счет клиента"/>;
         let secondInput;
         let secondInputText;
@@ -57,12 +61,8 @@ class Operations extends Component {
                     <option value="transfer_to">Перечислить клиенту</option>
                 </select>
                 <input type="submit" value="Выполнить"/>
-                <BootstrapTable keyField='accnum' data={accs} columns={columns} filter={filterFactory()}
-                                tableStyle={ { border: '#0000FF 2.5px solid' } }
-                                containerStyle={ { border: '#FFBB73 2.5px solid' } }
-                                headerStyle={ { border: 'red 1px solid' } }
-                                bodyStyle={ { border: 'green 1px solid' } }>
-                </BootstrapTable>
+                {/*<BootstrapTable keyField='accnum' data={accs} columns={columns} filter={filterFactory()}/>*/}
+                {TableComp}
             </form>
         )
     }
