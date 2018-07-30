@@ -3,7 +3,8 @@ import React, {Component} from 'react';
 // import filterFactory from 'react-bootstrap-table2-filter';
 // import {columns, accs} from './acc_table';
 // import '.acc_table.css'
-import TableComp from './TableComp';
+// import TableComp from './TableComp';
+import $ from 'jquery'
 
 class Operations extends Component {
 
@@ -14,6 +15,7 @@ class Operations extends Component {
         this.state = {value: 'create'};
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     handleChange(event) {
@@ -22,27 +24,42 @@ class Operations extends Component {
     }
 
     handleSubmit(event) {
-        alert('Вы действительно уверны, что хотите: ' + this.state.text + '?');
+        // alert('Вы действительно уверны, что хотите: ' + this.state.text + '?');
+        console.log(this.state.accnum)
         event.preventDefault();
+    }
+
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
+    componentDidMount = () =>{
+
     }
 
     render() {
 
         // const table = {TableComp.};
-        let accNum = <input type="text" placeholder="Счет клиента"/>;
+        let accNum = <input name="accnum" type="text" placeholder="Счет клиента" onChange={this.handleInputChange}/>;
         let secondInput;
         let secondInputText;
         let inputFIO;
         if (this.state.value === "transfer_to") {
-            secondInput = <input type="text" placeholder="Счет получателя"/>;
+            secondInput = <input name="second_accnum" type="text" placeholder="Счет получателя" onChange={this.handleInputChange}/>;
             secondInputText = " ==> ";
         }
         if (this.state.value === "create") {
             inputFIO =
                 <label>
-                    <input type="text" placeholder="Фамилия"/>
-                    <input type="text" placeholder="Имя"/>
-                    <input type="text" placeholder="Отчество"/>
+                    <input name="lastname" type="text" placeholder="Фамилия" onChange={this.handleInputChange}/>
+                    <input name="firstname" type="text" placeholder="Имя" onChange={this.handleInputChange}/>
+                    <input name="patronymic" type="text" placeholder="Отчество" onChange={this.handleInputChange}/>
                 </label>;
             accNum = "";
         }
@@ -62,7 +79,7 @@ class Operations extends Component {
                 </select>
                 <input type="submit" value="Выполнить"/>
                 {/*<BootstrapTable keyField='accnum' data={accs} columns={columns} filter={filterFactory()}/>*/}
-                {TableComp}
+                {/*{TableComp}*/}
             </form>
         )
     }
