@@ -4,10 +4,9 @@ import React, {Component} from 'react';
 // import {columns, accs} from './acc_table';
 // import '.acc_table.css'
 // import TableComp from './TableComp';
-import $ from 'jquery'
+import axios from 'axios'
 
 class Operations extends Component {
-
 
 
     constructor(props) {
@@ -25,7 +24,30 @@ class Operations extends Component {
 
     handleSubmit(event) {
         // alert('Вы действительно уверны, что хотите: ' + this.state.text + '?');
-        console.log(this.state.accnum)
+        let type_action = this.state.value;
+        let num_acc = this.state.accnum;
+        let second_accnum = this.state.second_accnum;
+        let lastname = this.state.lastname;
+        let firstname = this.state.firstname;
+        let patronymic = this.state.secondname;
+
+        let sendData = [{
+            "type" : type_action,
+            "lastName" : lastname,
+            "firstName" : firstname,
+            "patronymic" : patronymic,
+            "accNum" : num_acc,
+            "secondAccNum" : second_accnum
+        }];
+
+        axios.post('http://localhost:8080/rest/account/action', JSON.stringify(sendData))
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
         event.preventDefault();
     }
 
@@ -39,36 +61,32 @@ class Operations extends Component {
         });
     }
 
-    componentDidMount = () =>{
-
-    }
 
     render() {
 
-        // const table = {TableComp.};
-        let accNum = <input name="accnum" type="text" placeholder="Счет клиента" onChange={this.handleInputChange}/>;
-        let secondInput;
-        let secondInputText;
-        let inputFIO;
+        let acc_num = <input name="accnum" type="text" placeholder="Счет клиента" onChange={this.handleInputChange}/>;
+        let second_input;
+        let second_input_text;
+        let input_fio;
         if (this.state.value === "transfer_to") {
-            secondInput = <input name="second_accnum" type="text" placeholder="Счет получателя" onChange={this.handleInputChange}/>;
-            secondInputText = " ==> ";
+            second_input = <input name="second_accnum" type="text" placeholder="Счет получателя" onChange={this.handleInputChange}/>;
+            second_input_text = " ==> ";
         }
         if (this.state.value === "create") {
-            inputFIO =
+            input_fio =
                 <label>
                     <input name="lastname" type="text" placeholder="Фамилия" onChange={this.handleInputChange}/>
                     <input name="firstname" type="text" placeholder="Имя" onChange={this.handleInputChange}/>
-                    <input name="patronymic" type="text" placeholder="Отчество" onChange={this.handleInputChange}/>
+                    <input name="secondname" type="text" placeholder="Отчество" onChange={this.handleInputChange}/>
                 </label>;
-            accNum = "";
+            acc_num = "";
         }
 
         return (
             <form className="Operations" onSubmit={this.handleSubmit} style={{textAlign: 'center'}}>
-                {accNum}
-                {secondInputText}{secondInput}
-                {inputFIO}
+                {acc_num}
+                {second_input_text}{second_input}
+                {input_fio}
                 <select value={this.state.value} onChange={this.handleChange}>
                     <option value="create">Создать счет</option>
                     <option value="close">Закрыть счет</option>
