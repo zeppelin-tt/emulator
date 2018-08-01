@@ -12,6 +12,7 @@ class Operations extends Component {
     constructor(props) {
         super(props);
         this.state = {value: 'create'};
+        this.state = {text: 'Создать счёт'};
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -23,29 +24,43 @@ class Operations extends Component {
     }
 
     handleSubmit(event) {
-        // alert('Вы действительно уверны, что хотите: ' + this.state.text + '?');
         let type_action = this.state.value;
         let num_acc = this.state.accnum;
         let second_accnum = this.state.second_accnum;
         let lastname = this.state.lastname;
         let firstname = this.state.firstname;
         let patronymic = this.state.secondname;
+        let money = this.state.resources;
 
-        let sendData = [{
-            "type" : type_action,
-            "lastName" : lastname,
-            "firstName" : firstname,
-            "patronymic" : patronymic,
-            "accNum" : num_acc,
-            "secondAccNum" : second_accnum
-        }];
+        const sendData = {
+            "type": type_action,
+            "lastName": lastname,
+            "firstName": firstname,
+            "patronymic": patronymic,
+            "accNum": num_acc,
+            "secondAccNum": second_accnum,
+            "money": money
+        };
 
-        axios.post('http://localhost:8080/rest/account/action', JSON.stringify(sendData))
+        const header = {
+            headers:
+                {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                }
+        };
+        axios.post('http://localhost:8080/rest/account/action', JSON.stringify(sendData), header)
             .then((response) => {
                 console.log(response);
+                if (response.data['success'] === 'true') {
+                    alert("Операция " + this.state.text + " выполнена успешно!")
+                } else {
+                    alert(response.data['message'])
+                }
             })
             .catch((error) => {
                 console.log(error);
+                alert("Дерьмо случается!")
             });
 
         event.preventDefault();
@@ -68,8 +83,10 @@ class Operations extends Component {
         let second_input;
         let second_input_text;
         let input_fio;
+        let money;
         if (this.state.value === "transfer_to") {
-            second_input = <input name="second_accnum" type="text" placeholder="Счет получателя" onChange={this.handleInputChange}/>;
+            second_input = <input name="second_accnum" type="text" placeholder="Счет получателя"
+                                  onChange={this.handleInputChange}/>;
             second_input_text = " ==> ";
         }
         if (this.state.value === "create") {
@@ -81,12 +98,16 @@ class Operations extends Component {
                 </label>;
             acc_num = "";
         }
+        const actions_with_money = ["transfer_minus", "transfer_plus", "transfer_to"];
+        if (actions_with_money.includes(this.state.value)) {
+            money = <input name="resources" type="text" placeholder="Сумма, руб." onChange={this.handleInputChange}/>;
+        }
 
         return (
             <form className="Operations" onSubmit={this.handleSubmit} style={{textAlign: 'center'}}>
                 {acc_num}
                 {second_input_text}{second_input}
-                {input_fio}
+                {input_fio}{money}
                 <select value={this.state.value} onChange={this.handleChange}>
                     <option value="create">Создать счет</option>
                     <option value="close">Закрыть счет</option>
