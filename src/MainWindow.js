@@ -1,18 +1,17 @@
 import React, {Component} from 'react';
-// import BootstrapTable from 'react-bootstrap-table-next';
-// import filterFactory from 'react-bootstrap-table2-filter';
-// import {columns, accs} from './acc_table';
-// import '.acc_table.css'
-// import TableComp from './TableComp';
-import axios from 'axios'
+import DataTable from './DataTable';
+import axios from 'axios';
+import {css} from 'aphrodite';
+import styles from './Styles';
+import BootStyle from './bootstrap.min.css'
 
-class Operations extends Component {
+class MainWindow extends Component {
 
 
     constructor(props) {
         super(props);
-        this.state = {value: 'create'};
         this.state = {text: 'Создать счёт'};
+        this.state = {value: 'create'};
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -104,11 +103,11 @@ class Operations extends Component {
         }
 
         return (
-            <form className="Operations" onSubmit={this.handleSubmit} style={{textAlign: 'center'}}>
+            <form className="BootStyle" style={{textAlign: 'center'}}>
                 {acc_num}
                 {second_input_text}{second_input}
                 {input_fio}{money}
-                <select value={this.state.value} onChange={this.handleChange}>
+                <select className={css(styles.select)} value={this.state.value} onChange={this.handleChange}>
                     <option value="create">Создать счет</option>
                     <option value="close">Закрыть счет</option>
                     <option value="block">Заблокировать счет</option>
@@ -116,12 +115,11 @@ class Operations extends Component {
                     <option value="transfer_plus">Зачислить сумму</option>
                     <option value="transfer_to">Перечислить клиенту</option>
                 </select>
-                <input type="submit" value="Выполнить"/>
-                {/*<BootstrapTable keyField='accnum' data={accs} columns={columns} filter={filterFactory()}/>*/}
-                {/*{TableComp}*/}
+                <input className="BootStyle" type="submit" onSubmit={this.handleSubmit} value="Выполнить"/>
+                {/*<DataTable />*/}
             </form>
         )
     }
 }
 
-export default Operations;
+export default MainWindow;

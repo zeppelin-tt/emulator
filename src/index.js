@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Operations from './Form'
+import MainWindow from './MainWindow'
 import './index.css';
 
 ReactDOM.render(
-    <Operations/>, document.getElementById('root')
+    <MainWindow/>, document.getElementById('root')
 );

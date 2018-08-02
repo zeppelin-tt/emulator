@@ -1,6 +1,7 @@
-.MsgCom {
+.MainWindow {
     width: 200px;
     height: 40px;
+    padding: 120px;
     background: aliceblue;
     text-align: center;
 
