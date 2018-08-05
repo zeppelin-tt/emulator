@@ -30,7 +30,7 @@ export default class DataTable extends React.Component {
         }, {
             dataField: 'balance',
             text: 'Баланс',
-            filter: numberFilter(),
+            // filter: 'customFilter',
             sort: true
         }
             // ,

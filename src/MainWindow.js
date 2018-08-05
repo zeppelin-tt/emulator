@@ -6,6 +6,7 @@ import styles from './Styles';
 import './bootstrap.min.css'
 import Cleave from 'cleave.js/react'
 
+import {arrayToTable} from './utils/common.js'
 
 class MainWindow extends Component {
 
@@ -56,6 +57,9 @@ class MainWindow extends Component {
             "money": money
         };
 
+        // const resp = arrayToTable();
+        // console.log(resp);
+
         const header = {
             headers:
                 {
@@ -76,6 +80,12 @@ class MainWindow extends Component {
             .catch((error) => {
                 alert("Дерьмо случается!")
             });
+
+
+
+    }
+
+    getTableView() {
 
     }
 
@@ -99,6 +109,7 @@ class MainWindow extends Component {
         let input_fio;
         let money;
         let table;
+
         if (this.state.tableOn === true) {
             table = <DataTable/>;
         }
