@@ -21,6 +21,7 @@ class MainWindow extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.getTableView = this.getTableView.bind(this);
     }
 
     handleChange(event) {
@@ -81,12 +82,38 @@ class MainWindow extends Component {
                 alert("Дерьмо случается!")
             });
 
-
-
     }
 
     getTableView() {
+        var self = this;
+        const header = {
+            headers:
+                {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                }
+        };
+        axios.get('http://localhost:8080/rest/account/1/view', header)
+            .then((response) => {
+                self.processData(response.data['data'])
+            }).catch((error) => {
+                console.log(error);
+            alert("Дерьмо случается и с табличкой!")
+        });
+    }
 
+
+    processData(data) {
+        export var list = data['view'];
+        var count_rows = data['countRows'];
+
+        this.setState({
+            list_table: list,
+            count_rows: count_rows
+        });
+
+        console.log(this.state.list_table);
+        console.log(this.state.count_rows);
     }
 
 
@@ -94,7 +121,9 @@ class MainWindow extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-
+        if (name === "tableOn" && this.state.tableOn === false) {
+            this.getTableView();
+        }
         this.setState({
             [name]: value
         });
