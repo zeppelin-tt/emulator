@@ -1,15 +1,23 @@
 import React from 'react';
-import filterFactory, {textFilter, numberFilter, dateFilter} from 'react-bootstrap-table2-filter';
+import filterFactory, {
+    textFilter, numberFilter
+    // , dateFilter
+} from 'react-bootstrap-table2-filter';
 import {accsGenerator} from './utils/common.js'
 import BootstrapTable from 'react-bootstrap-table-next';
-import './style.css'
-import {css} from 'aphrodite';
-import styles from './Styles';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
+// import paginationFactory from 'react-bootstrap-table2-paginator'
+import styles from "./Styles";
+import {css} from "aphrodite";
+
 
 export default class DataTable extends React.Component {
 
+
     render() {
-        const accs = accsGenerator(15);
+
+        const accs = accsGenerator(10);
+
         const columns = [{
             dataField: 'numAcc',
             text: 'Номер счёта',
@@ -24,15 +32,25 @@ export default class DataTable extends React.Component {
             text: 'Баланс',
             filter: numberFilter(),
             sort: true
-        }, {
-            dataField: 'create_time',
-            text: 'Открытие счёта',
-            filter: dateFilter(),
-            sort: true
-        }];
+        }
+            // ,
+            //     {
+            //     dataField: 'create_time',
+            //     text: 'Открытие счёта',
+            //     filter: dateFilter(),
+            //     sort: true
+            // }
+        ];
 
         return (
-                <BootstrapTable className={css(styles.table)} keyField='numAcc' data={accs} columns={columns} filter={filterFactory()}/>
+            <div className={css(styles.table)}>
+            <BootstrapTable keyField='numAcc'
+                            data={accs}
+                            columns={columns}
+                            filter={filterFactory()}
+                            // pagination={paginationFactory()}
+            />
+            </div>
         )
     }
 }

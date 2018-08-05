@@ -2,17 +2,28 @@ import {StyleSheet} from 'aphrodite';
 
 export default StyleSheet.create({
     table: {
-        background: '#2abf13'
+        marginLeft: '50px',
+        marginRight: '50px',
+        backgroundColor: '#d4d4d4',
+        color: '#365fe7'
+    },
+    input_initials: {
+        textTransform: 'capitalize'
     },
     menu: {
         textAlign: 'center',
         padding: '20px'
+
     },
     select: {
         border: '1px solid #ccc',
         width: '200px',
         height: '30px',
-        // background: '#BF6825'
+    },
+    tableCheckbox: {
+        width: '1500px',
+        height: '30px',
+        // paddingRight: '30px'
     }
 
 });

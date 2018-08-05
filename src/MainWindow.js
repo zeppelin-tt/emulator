@@ -3,15 +3,20 @@ import DataTable from './DataTable';
 import axios from 'axios';
 import {css} from 'aphrodite';
 import styles from './Styles';
-import BootStyle from './bootstrap.min.css'
+import './bootstrap.min.css'
+import Cleave from 'cleave.js/react'
+
 
 class MainWindow extends Component {
 
 
     constructor(props) {
         super(props);
-        this.state = {text: 'Создать счёт'};
-        this.state = {value: 'create'};
+        this.state = {
+            text: 'Создать счёт',
+            value: 'create',
+            tableOn: true
+        };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -22,14 +27,24 @@ class MainWindow extends Component {
         this.setState({text: event.target.options[event.target.selectedIndex].text});
     }
 
-    handleSubmit(event) {
+    handleSubmit() {
+
         let type_action = this.state.value;
         let num_acc = this.state.accnum;
+        if (num_acc !== undefined) {
+            num_acc = num_acc.replace(/ /g, '')
+        }
         let second_accnum = this.state.second_accnum;
+        if (second_accnum !== undefined) {
+            second_accnum = num_acc.replace(/ /g, '')
+        }
         let lastname = this.state.lastname;
         let firstname = this.state.firstname;
         let patronymic = this.state.secondname;
         let money = this.state.resources;
+        if (money !== undefined) {
+            money = money.replace(/,/, '')
+        }
 
         const sendData = {
             "type": type_action,
@@ -48,6 +63,7 @@ class MainWindow extends Component {
                     Accept: 'application/json'
                 }
         };
+
         axios.post('http://localhost:8080/rest/account/action', JSON.stringify(sendData), header)
             .then((response) => {
                 console.log(response);
@@ -58,12 +74,11 @@ class MainWindow extends Component {
                 }
             })
             .catch((error) => {
-                console.log(error);
                 alert("Дерьмо случается!")
             });
 
-        event.preventDefault();
     }
+
 
     handleInputChange(event) {
         const target = event.target;
@@ -75,39 +90,49 @@ class MainWindow extends Component {
         });
     }
 
-
     render() {
 
-        let acc_num = <input name="accnum" type="text" placeholder="Счет клиента" onChange={this.handleInputChange}/>;
-        let second_input;
+        let acc_num = <Cleave name="accnum" options={{creditCard: true}} type="text" placeholder="Счет клиента"
+                              onChange={this.handleInputChange}/>;
+        let second_acc_num;
         let second_input_text;
         let input_fio;
         let money;
+        let table;
+        if (this.state.tableOn === true) {
+            table = <DataTable/>;
+        }
         if (this.state.value === "transfer_to") {
-            second_input = <input name="second_accnum" type="text" placeholder="Счет получателя"
-                                  onChange={this.handleInputChange}/>;
+            second_acc_num =
+                <Cleave name="second_accnum" options={{creditCard: true}} type="text" placeholder="Счет получателя"
+                        onChange={this.handleInputChange}/>;
             second_input_text = " ==> ";
         }
         if (this.state.value === "create") {
             input_fio =
-                <label>
-                    <input name="lastname" type="text" placeholder="Фамилия" onChange={this.handleInputChange}/>
-                    <input name="firstname" type="text" placeholder="Имя" onChange={this.handleInputChange}/>
-                    <input name="secondname" type="text" placeholder="Отчество" onChange={this.handleInputChange}/>
-                </label>;
+                <lable>
+                    <input className={css(styles.input_initials)} name="lastname" type="text" placeholder="Фамилия"
+                           onChange={this.handleInputChange}/>
+                    <input className={css(styles.input_initials)} name="firstname" type="text" placeholder="Имя"
+                           onChange={this.handleInputChange}/>
+                    <input className={css(styles.input_initials)} name="secondname" type="text"
+                           placeholder="Отчество" onChange={this.handleInputChange}/>
+                </lable>
             acc_num = "";
         }
         const actions_with_money = ["transfer_minus", "transfer_plus", "transfer_to"];
         if (actions_with_money.includes(this.state.value)) {
-            money = <input name="resources" type="text" placeholder="Сумма, руб." onChange={this.handleInputChange}/>;
+            money = <Cleave name="resources" options={{numeral: true, numeralIntegerScale: 6}} type="text"
+                            placeholder="Сумма, руб." onChange={this.handleInputChange}/>;
         }
 
         return (
-            <form className="BootStyle" style={{textAlign: 'center'}}>
-                {acc_num}
-                {second_input_text}{second_input}
-                {input_fio}{money}
-                <select className={css(styles.select)} value={this.state.value} onChange={this.handleChange}>
+
+            <form className={css(styles.menu)}>
+                {acc_num}{second_input_text}{second_acc_num}{input_fio}{money}
+                <select className={css(styles.select)}
+                        value={this.state.value}
+                        onChange={this.handleChange}>
                     <option value="create">Создать счет</option>
                     <option value="close">Закрыть счет</option>
                     <option value="block">Заблокировать счет</option>
@@ -115,8 +140,16 @@ class MainWindow extends Component {
                     <option value="transfer_plus">Зачислить сумму</option>
                     <option value="transfer_to">Перечислить клиенту</option>
                 </select>
-                <input className="BootStyle" type="submit" onSubmit={this.handleSubmit} value="Выполнить"/>
-                {/*<DataTable />*/}
+                <input type="submit"
+                       onClick={this.handleSubmit}
+                       value="Выполнить"/>
+                <input name="tableOn"
+                       className={css(styles.tableCheckbox)}
+                       type="checkbox"
+                       checked={this.state.tableOn}
+                       onChange={this.handleInputChange}
+                       value="Таблица"/>
+                {table}
             </form>
         )
     }
