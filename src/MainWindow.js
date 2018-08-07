@@ -16,7 +16,8 @@ class MainWindow extends Component {
             value: 'create',
             tableOn: false,
             list_table: [],
-            count_rows: []
+            count_rows: [],
+            actual_page: 0
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -81,8 +82,10 @@ class MainWindow extends Component {
 
     }
 
-    getTableView() {
+
+    getTableView(page) {
         const self = this;
+        const url = `http://localhost:8080/rest/account/view/${page}`;
         const header = {
             headers:
                 {
@@ -90,7 +93,7 @@ class MainWindow extends Component {
                     Accept: 'application/json',
                 }
         };
-        axios.get('http://localhost:8080/rest/account/view/0', header)
+        axios.get(url, header)
             .then((response) => {
                 self.processData(response.data['data'])
             }).catch((error) => {
@@ -116,8 +119,19 @@ class MainWindow extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         if (name === "tableOn" && this.state.tableOn === false) {
-            this.getTableView();
+            this.getTableView(0);
         }
+        if (name === "Prev" && this.state.actual_page > 0) {
+            this.setState({actual_page: this.state.actual_page - 1});
+            const page = this.state.actual_page;
+            this.getTableView(page);
+        }
+        if (name === "Next" && this.state.actual_page < (this.state.count_rows / 10)) {
+            this.setState({actual_page: this.state.actual_page + 1});
+            const page = this.state.actual_page;
+            this.getTableView(page);
+        }
+        console.log(target);
         this.setState({
             [name]: value
         });
@@ -126,20 +140,34 @@ class MainWindow extends Component {
     render() {
 
         let acc_num = <Cleave name="accnum" options={{creditCard: true}} type="text" placeholder="Счет клиента"
-                             onChange={this.handleInputChange}/>;
+                              onChange={this.handleInputChange}/>;
         let second_acc_num;
         let second_input_text;
         let input_fio;
         let money;
         let table;
+        let actualPage = 1;
 
         if (this.state.tableOn === true) {
-            table = <DataTable listTable={this.state.list_table} countRows={this.state.count_rows}/>;
+            table =
+                <div>
+                    <DataTable listTable={this.state.list_table} countRows={this.state.count_rows}/>
+                    <nav aria-label="Page navigation example">
+                        <ul className="pagination justify-content-center">
+                            <li className="page-item">
+                                <a className="page-link" name="Prev" onClick={this.handleInputChange} href="#">Prev</a>
+                            </li>
+                            <li className="page-item">
+                                <a className="page-link" name="Next" onClick={this.handleInputChange} href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
         }
         if (this.state.value === "transfer_to") {
             second_acc_num =
                 <Cleave name="second_accnum" options={{creditCard: true}} type="text" placeholder="Счет получателя"
-                       onChange={this.handleInputChange}/>;
+                        onChange={this.handleInputChange}/>;
             second_input_text = " ==> ";
         }
         if (this.state.value === "create") {
@@ -156,7 +184,8 @@ class MainWindow extends Component {
         }
         const actions_with_money = ["transfer_minus", "transfer_plus", "transfer_to"];
         if (actions_with_money.includes(this.state.value)) {
-            money = <Cleave name="resources" options={{numeral: true, numeralIntegerScale: 6}} type="text" placeholder="Сумма, руб." onChange={this.handleInputChange}/>;
+            money = <Cleave name="resources" options={{numeral: true, numeralIntegerScale: 6}} type="text"
+                            placeholder="Сумма, руб." onChange={this.handleInputChange}/>;
         }
 
         return (

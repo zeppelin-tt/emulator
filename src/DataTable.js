@@ -5,7 +5,6 @@ import filterFactory, {
 } from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
-// import paginationFactory from 'react-bootstrap-table2-paginator'
 import styles from "./Styles";
 import {css} from "aphrodite";
 
@@ -17,6 +16,7 @@ export default class DataTable extends React.Component {
 
         const acs = this.props.listTable;
         const countRows = this.props.countRows;
+
 
         const columns = [{
             dataField: 'accNum',
@@ -55,7 +55,6 @@ export default class DataTable extends React.Component {
                                 data={acs}
                                 columns={columns}
                                 filter={filterFactory()}
-                    // pagination={paginationFactory()}
                 />
             </div>
         )

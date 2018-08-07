@@ -2,8 +2,8 @@ import {StyleSheet} from 'aphrodite';
 
 export default StyleSheet.create({
     table: {
-        marginLeft: '50px',
-        marginRight: '50px',
+        marginLeft: '100px',
+        marginRight: '100px',
         backgroundColor: '#d4d4d4',
         color: '#365fe7'
     },
