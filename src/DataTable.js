@@ -3,8 +3,6 @@ import filterFactory, {
     textFilter, numberFilter
     // , dateFilter
 } from 'react-bootstrap-table2-filter';
-import {accsGenerator} from './utils/common.js'
-import {list} from './MainWindow.js'
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 // import paginationFactory from 'react-bootstrap-table2-paginator'
@@ -17,7 +15,8 @@ export default class DataTable extends React.Component {
 
     render() {
 
-        const accs = list;
+        const acs = this.props.listTable;
+        const countRows = this.props.countRows;
 
         const columns = [{
             dataField: 'accNum',
@@ -53,7 +52,7 @@ export default class DataTable extends React.Component {
         return (
             <div className={css(styles.table)}>
                 <BootstrapTable keyField='accNum'
-                                data={accs}
+                                data={acs}
                                 columns={columns}
                                 filter={filterFactory()}
                     // pagination={paginationFactory()}

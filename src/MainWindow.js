@@ -6,17 +6,17 @@ import styles from './Styles';
 import './bootstrap.min.css'
 import Cleave from 'cleave.js/react'
 
-import {arrayToTable} from './utils/common.js'
 
 class MainWindow extends Component {
-
 
     constructor(props) {
         super(props);
         this.state = {
             text: 'Создать счёт',
             value: 'create',
-            tableOn: true
+            tableOn: false,
+            list_table: [],
+            count_rows: []
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -58,9 +58,6 @@ class MainWindow extends Component {
             "money": money
         };
 
-        // const resp = arrayToTable();
-        // console.log(resp);
-
         const header = {
             headers:
                 {
@@ -85,7 +82,7 @@ class MainWindow extends Component {
     }
 
     getTableView() {
-        var self = this;
+        const self = this;
         const header = {
             headers:
                 {
@@ -93,23 +90,20 @@ class MainWindow extends Component {
                     Accept: 'application/json',
                 }
         };
-        axios.get('http://localhost:8080/rest/account/1/view', header)
+        axios.get('http://localhost:8080/rest/account/view/0', header)
             .then((response) => {
                 self.processData(response.data['data'])
             }).catch((error) => {
-                console.log(error);
+            console.log(error);
             alert("Дерьмо случается и с табличкой!")
         });
     }
 
 
     processData(data) {
-        export var list = data['view'];
-        var count_rows = data['countRows'];
-
         this.setState({
-            list_table: list,
-            count_rows: count_rows
+            list_table: data['view'],
+            count_rows: data['countRows']
         });
 
         console.log(this.state.list_table);
@@ -132,7 +126,7 @@ class MainWindow extends Component {
     render() {
 
         let acc_num = <Cleave name="accnum" options={{creditCard: true}} type="text" placeholder="Счет клиента"
-                              onChange={this.handleInputChange}/>;
+                             onChange={this.handleInputChange}/>;
         let second_acc_num;
         let second_input_text;
         let input_fio;
@@ -140,12 +134,12 @@ class MainWindow extends Component {
         let table;
 
         if (this.state.tableOn === true) {
-            table = <DataTable/>;
+            table = <DataTable listTable={this.state.list_table} countRows={this.state.count_rows}/>;
         }
         if (this.state.value === "transfer_to") {
             second_acc_num =
                 <Cleave name="second_accnum" options={{creditCard: true}} type="text" placeholder="Счет получателя"
-                        onChange={this.handleInputChange}/>;
+                       onChange={this.handleInputChange}/>;
             second_input_text = " ==> ";
         }
         if (this.state.value === "create") {
@@ -162,8 +156,7 @@ class MainWindow extends Component {
         }
         const actions_with_money = ["transfer_minus", "transfer_plus", "transfer_to"];
         if (actions_with_money.includes(this.state.value)) {
-            money = <Cleave name="resources" options={{numeral: true, numeralIntegerScale: 6}} type="text"
-                            placeholder="Сумма, руб." onChange={this.handleInputChange}/>;
+            money = <Cleave name="resources" options={{numeral: true, numeralIntegerScale: 6}} type="text" placeholder="Сумма, руб." onChange={this.handleInputChange}/>;
         }
 
         return (
