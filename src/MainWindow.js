@@ -102,6 +102,34 @@ class MainWindow extends Component {
         });
     }
 
+    getFilteredTable() {
+        const self = this;
+        const filterData = {
+            "accNum": "",
+            "initials": "",
+            "firstName": "",
+            "patronymic": "",
+            "secondAccNum": "",
+            "money": ""
+        };
+
+        const url = `http://localhost:8080/rest/account/filter`;
+        const header = {
+            headers:
+                {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                }
+        };
+        axios.post(url,  JSON.stringify(filterData), header)
+            .then((response) => {
+                self.processData(response.data['data'])
+            }).catch((error) => {
+            console.log(error);
+            alert("Дерьмо случается и с табличкой!")
+        });
+    }
+
 
     processData(data) {
         this.setState({

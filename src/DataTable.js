@@ -11,6 +11,9 @@ import {css} from "aphrodite";
 
 export default class DataTable extends React.Component {
 
+    getFilters() {
+        const initials_filterl;
+    }
 
     render() {
 
@@ -21,11 +24,18 @@ export default class DataTable extends React.Component {
         const columns = [{
             dataField: 'accNum',
             text: 'Номер счёта',
-            // filter: textFilter({caseSensitive: true})
+            title: true
         }, {
             dataField: 'initials',
             text: 'ФИО',
-            // filter: textFilter({caseSensitive: true}),
+            filter: textFilter({
+                placeholder: 'Введите инициалы...',
+                // className: 'initials_filter',
+                delay: 2000,
+                getFilters: (filter) => {
+                    initials_filter = filter;
+                }
+            }) ,
             sort: true
         }, {
             dataField: 'balance',
@@ -35,7 +45,7 @@ export default class DataTable extends React.Component {
         }, {
             dataField: 'action',
             text: 'Последняя операция',
-            // filter: 'customFilter',
+            // filter: true;
             sort: true
         }, {
             dataField: 'lastOpTime',
