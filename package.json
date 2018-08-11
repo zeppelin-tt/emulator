@@ -46,6 +46,7 @@
     "react": "^16.4.1",
     "react-bootstrap": "^0.32.1",
     "react-bootstrap-select": "^0.14.0",
+    "react-bootstrap-sidebar": "0.0.1",
     "react-bootstrap-table": "^4.3.1",
     "react-bootstrap-table-next": "^0.1.15",
     "react-bootstrap-table2-filter": "^0.3.0",

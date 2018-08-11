@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import DataTable from './DataTable';
+// import SideBarSearch from './sidebar/SideBarSearch';
 import axios from 'axios';
 import {css} from 'aphrodite';
 import styles from './Styles';
@@ -17,7 +18,8 @@ class MainWindow extends Component {
             tableOn: false,
             list_table: [],
             count_rows: [],
-            actual_page: 0
+            actual_page: 0,
+            isVisibleSidebar: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,6 +34,7 @@ class MainWindow extends Component {
 
     handleSubmit() {
 
+        const op = this.state.value;
         let type_action = this.state.value;
         let num_acc = this.state.accnum;
         if (num_acc !== undefined) {
@@ -39,7 +42,7 @@ class MainWindow extends Component {
         }
         let second_accnum = this.state.second_accnum;
         if (second_accnum !== undefined) {
-            second_accnum = num_acc.replace(/ /g, '')
+            second_accnum = second_accnum.replace(/ /g, '')
         }
         let lastname = this.state.lastname;
         let firstname = this.state.firstname;
@@ -47,6 +50,30 @@ class MainWindow extends Component {
         let money = this.state.resources;
         if (money !== undefined) {
             money = money.replace(/,/, '')
+        }
+        if (op === "create") {
+            if (lastname === undefined || firstname === undefined || patronymic === undefined) {
+                alert("Все поля должны быть заполнены!");
+                return;
+            }
+        }
+        if (op === "close" || op === "block") {
+            if (num_acc === undefined) {
+                alert("Все поля должны быть заполнены!");
+                return;
+            }
+        }
+        if (op === "transfer_minus" || op === "transfer_plus") {
+            if (num_acc === undefined || money === undefined) {
+                alert("Все поля должны быть заполнены!");
+                return;
+            }
+        }
+        if (op === "transfer_to") {
+            if (num_acc === undefined || money === undefined || second_accnum === undefined) {
+                alert("Все поля должны быть заполнены!");
+                return;
+            }
         }
 
         const sendData = {
@@ -66,10 +93,8 @@ class MainWindow extends Component {
                     Accept: 'application/json'
                 }
         };
-
         axios.post('http://localhost:8080/rest/account/action', JSON.stringify(sendData), header)
             .then((response) => {
-                console.log(response);
                 if (response.data['success'] === 'true') {
                     alert("Операция " + this.state.text + " выполнена успешно!")
                 } else {
@@ -121,7 +146,7 @@ class MainWindow extends Component {
                     Accept: 'application/json',
                 }
         };
-        axios.post(url,  JSON.stringify(filterData), header)
+        axios.post(url, JSON.stringify(filterData), header)
             .then((response) => {
                 self.processData(response.data['data'])
             }).catch((error) => {
@@ -136,33 +161,35 @@ class MainWindow extends Component {
             list_table: data['view'],
             count_rows: data['countRows']
         });
-
-        console.log(this.state.list_table);
-        console.log(this.state.count_rows);
     }
 
+    // updateModal(isVisible) {
+    //     this.state.isVisible = isVisible;
+    //     this.forceUpdate();
+    // }
 
     handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        if (name === "tableOn" && this.state.tableOn === false) {
-            this.getTableView(0);
-        }
-        if (name === "Prev" && this.state.actual_page > 0) {
-            this.setState({actual_page: this.state.actual_page - 1});
-            const page = this.state.actual_page;
-            this.getTableView(page);
-        }
-        if (name === "Next" && this.state.actual_page < (this.state.count_rows / 10)) {
-            this.setState({actual_page: this.state.actual_page + 1});
-            const page = this.state.actual_page;
-            this.getTableView(page);
-        }
-        console.log(target);
+        let page = this.state.actual_page;
         this.setState({
             [name]: value
         });
+        if (name === "tableOn" && this.state.tableOn === false) {
+            this.setState({actual_page: 0});
+            this.getTableView(0);
+        }
+        if (name === "Prev" && page > 0) {
+            this.setState({actual_page: page - 1});
+            page--;
+            this.getTableView(page);
+        }
+        if (name === "Next" && page < (this.state.count_rows / 10) - 1) {
+            this.setState({actual_page: page + 1});
+            page++;
+            this.getTableView(page);
+        }
     }
 
     render() {
@@ -192,6 +219,7 @@ class MainWindow extends Component {
                     </nav>
                 </div>
         }
+
         if (this.state.value === "transfer_to") {
             second_acc_num =
                 <Cleave name="second_accnum" options={{creditCard: true}} type="text" placeholder="Счет получателя"
@@ -219,6 +247,9 @@ class MainWindow extends Component {
         return (
 
             <form className={css(styles.menu)}>
+                {/*<div>*/}
+                {/*<SideBarSearch className='menu-sidebar left' show={this.props.isVisible} onHide={this.props.onHide}/>*/}
+                {/*</div>*/}
                 {acc_num}{second_input_text}{second_acc_num}{input_fio}{money}
                 <select className={css(styles.select)}
                         value={this.state.value}

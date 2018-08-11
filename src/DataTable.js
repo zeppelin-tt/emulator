@@ -1,8 +1,10 @@
 import React from 'react';
-import filterFactory, {
-    textFilter, numberFilter
+import filterFactory
+    // , {
+    // textFilter, numberFilter
     // , dateFilter
-} from 'react-bootstrap-table2-filter';
+// }
+from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import styles from "./Styles";
@@ -11,9 +13,9 @@ import {css} from "aphrodite";
 
 export default class DataTable extends React.Component {
 
-    getFilters() {
-        const initials_filterl;
-    }
+    // getFilters() {
+    //     const initials_filterl;
+    // }
 
     render() {
 
@@ -28,14 +30,14 @@ export default class DataTable extends React.Component {
         }, {
             dataField: 'initials',
             text: 'ФИО',
-            filter: textFilter({
-                placeholder: 'Введите инициалы...',
-                // className: 'initials_filter',
-                delay: 2000,
-                getFilters: (filter) => {
-                    initials_filter = filter;
-                }
-            }) ,
+            // filter: textFilter({
+            //     placeholder: 'Введите инициалы...',
+            //     // className: 'initials_filter',
+            //     delay: 2000,
+            //     getFilters: (filter) => {
+            //         initials_filter = filter;
+            //     }
+            // }) ,
             sort: true
         }, {
             dataField: 'balance',
