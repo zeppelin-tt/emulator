@@ -4,8 +4,8 @@ export default StyleSheet.create({
     table: {
         marginLeft: '100px',
         marginRight: '100px',
-        backgroundColor: '#d4d4d4',
-        color: '#365fe7'
+        backgroundColor: '#5bd467',
+        color: '#361be7'
     },
     input_initials: {
         textTransform: 'capitalize'
