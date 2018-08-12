@@ -25,7 +25,8 @@ class MainWindow extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getTableView = this.getTableView.bind(this);
-        this.toggleTable = this.toggleTable.bind (this);
+        this.toggleTable = this.toggleTable.bind(this);
+        this.getAccNumInput = this.getAccNumInput.bind(this);
 
         this.getTableView(0);
     }
@@ -34,21 +35,25 @@ class MainWindow extends Component {
         let self = this;
         let rows = [];
         let table;
+        let accNum = this.getAccNumInput();
 
         switch (this.state.value) {
             case "create": {
-                rows.push (
+                rows.push(
                     <div key={'row_' + rows.length} className={'form-group'}>
                         <label>Фамилия</label>
-                        <input className={'form-control m-b-20'} name="lastname" type="text" placeholder="Введите фамилию" required={true} maxLength={30} autoComplete="off"
+                        <input className={'form-control m-b-20'} name="lastname" type="text"
+                               placeholder="Введите фамилию" required={true} maxLength={30} autoComplete="off"
                                onChange={this.handleInputChange}/>
 
                         <label>Имя</label>
-                        <input className={'form-control m-b-20'} name="firstname" type="text" placeholder="Введите имя" required={true} maxLength={30} autoComplete="off"
+                        <input className={'form-control m-b-20'} name="firstname" type="text" placeholder="Введите имя"
+                               required={true} maxLength={30} autoComplete="off"
                                onChange={this.handleInputChange}/>
 
                         <label>Отчество</label>
-                        <input className={'form-control m-b-20'} name="secondname" type="text" required={true} maxLength={30} autoComplete="off"
+                        <input className={'form-control m-b-20'} name="secondname" type="text" required={true}
+                               maxLength={30} autoComplete="off"
                                placeholder="Введите отчество" onChange={this.handleInputChange}/>
                     </div>
                 );
@@ -56,43 +61,46 @@ class MainWindow extends Component {
             }
             case "transfer_minus":
             case "transfer_plus": {
-                rows.push (
+                rows.push(
                     <div key={'row_' + rows.length}>
-                        this.getAccNumInput ()
+                        {accNum}
                     </div>
                 );
-                rows.push (
+                rows.push(
                     <div key={'row_' + rows.length} className={'m-b-20'}>
-                        <Cleave name="resources" className={'form-control'} options={{numeral: true, numeralIntegerScale: 6}} type="text" autoComplete="off"
+                        <Cleave name="resources" className={'form-control'}
+                                options={{numeral: true, numeralIntegerScale: 6}} type="text" autoComplete="off"
                                 placeholder="Сумма, руб." onChange={this.handleInputChange}/>
                     </div>
                 );
                 break;
             }
             case "transfer_to": {
-                rows.push (
+                rows.push(
                     <div key={'row_' + rows.length}>
-                        this.getAccNumInput ()
+                        {accNum}
                     </div>
                 );
-                rows.push (
+                rows.push(
                     <div key={'row_' + rows.length} className={'m-b-20'}>
-                        <Cleave name="second_accnum" className={'form-control'} options={{creditCard: true}} type="text" placeholder="Счет получателя" autoComplete="off"
-                                onChange={this.handleInputChange}  />
+                        <Cleave name="second_accnum" className={'form-control'} options={{creditCard: true}} type="text"
+                                placeholder="Счет получателя" autoComplete="off"
+                                onChange={this.handleInputChange}/>
                     </div>
                 );
-                rows.push (
+                rows.push(
                     <div key={'row_' + rows.length} className={'m-b-20'}>
-                        <Cleave name="resources" className={'form-control'} options={{numeral: true, numeralIntegerScale: 6}} type="text"
-                                placeholder="Сумма, руб." onChange={this.handleInputChange}  autoComplete="off"/>
+                        <Cleave name="resources" className={'form-control'}
+                                options={{numeral: true, numeralIntegerScale: 6}} type="text"
+                                placeholder="Сумма, руб." onChange={this.handleInputChange} autoComplete="off"/>
                     </div>
                 );
                 break;
             }
             default: {
-                rows.push (
-                    <div key={'row_' + rows.length}>
-                        this.getAccNumInput ()
+                rows.push(
+                    <div key={'row_' + rows.length} className={'m-b-20'}>
+                        {accNum}
                     </div>
                 );
                 break;
@@ -130,9 +138,6 @@ class MainWindow extends Component {
                         </div>
                         <div className="panel-body">
                             <form onSubmit={this.handleSubmit}>
-                                {/*<div>*/}
-                                {/*<SideBarSearch className='menu-sidebar left' show={this.props.isVisible} onHide={this.props.onHide}/>*/}
-                                {/*</div>*/}
 
                                 <select className={'form-control m-b-20'} value={this.state.value}
                                         onChange={this.handleChange}>
@@ -156,14 +161,16 @@ class MainWindow extends Component {
                                     this.state.tableOn ? (
                                         <div>
                                             <button className={'btn btn-warning btn-outline'} onClick={function () {
-                                                self.toggleTable ('test');
-                                            }}>Скрыть таблицу</button>
+                                                self.toggleTable('test');
+                                            }}>Скрыть таблицу
+                                            </button>
                                         </div>
                                     ) : (
                                         <div>
                                             <button className={'btn btn-success btn-outline'} onClick={function () {
-                                                self.toggleTable ('test');
-                                            }}>Открыть таблицу</button>
+                                                self.toggleTable('test');
+                                            }}>Открыть таблицу
+                                            </button>
                                         </div>
                                     )
                                 }
@@ -179,10 +186,10 @@ class MainWindow extends Component {
         )
     }
 
-    toggleTable (param) {
-        var state = this.state;
+    toggleTable(param) {
+        let state = this.state;
         state.tableOn = !state.tableOn;
-        this.setState (state);
+        this.setState(state);
     }
 
     handleChange(event) {
@@ -210,30 +217,30 @@ class MainWindow extends Component {
         if (money !== undefined) {
             money = money.replace(/,/, '')
         }
-        if (op === "create") {
-            if (!lastname || !firstname || !patronymic) {
-                alert("Все поля должны быть заполнены!");
-                return;
-            }
-        }
-        if (op === "close" || op === "block") {
-            if (num_acc === undefined) {
-                alert("Все поля должны быть заполнены!");
-                return;
-            }
-        }
-        if (op === "transfer_minus" || op === "transfer_plus") {
-            if (num_acc === undefined || money === undefined) {
-                alert("Все поля должны быть заполнены!");
-                return;
-            }
-        }
-        if (op === "transfer_to") {
-            if (num_acc === undefined || money === undefined || second_accnum === undefined) {
-                alert("Все поля должны быть заполнены!");
-                return;
-            }
-        }
+        // if (op === "create") {
+        //     if (!lastname || !firstname || !patronymic) {
+        //         alert("Все поля должны быть заполнены!");
+        //         return;
+        //     }
+        // }
+        // if (op === "close" || op === "block") {
+        //     if (num_acc === undefined) {
+        //         alert("Все поля должны быть заполнены!");
+        //         return;
+        //     }
+        // }
+        // if (op === "transfer_minus" || op === "transfer_plus") {
+        //     if (num_acc === undefined || money === undefined) {
+        //         alert("Все поля должны быть заполнены!");
+        //         return;
+        //     }
+        // }
+        // if (op === "transfer_to") {
+        //     if (num_acc === undefined || money === undefined || second_accnum === undefined) {
+        //         alert("Все поля должны быть заполнены!");
+        //         return;
+        //     }
+        // }
 
         const sendData = {
             "type": type_action,
@@ -324,11 +331,6 @@ class MainWindow extends Component {
         });
     }
 
-    // updateModal(isVisible) {
-    //     this.state.isVisible = isVisible;
-    //     this.forceUpdate();
-    // }
-
     handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -349,15 +351,15 @@ class MainWindow extends Component {
         }
 
         state [name] = value;
-        this.setState (state);
+        this.setState(state);
     }
 
-    getAccNumInput () {
+    getAccNumInput() {
         return (
             <div className={'m-b-20'}>
                 <Cleave name="accnum" className={'form-control'} options={{creditCard: true}} type="text"
                         placeholder="Счет клиента"
-                        onChange={this.handleInputChange}  autoComplete="off"/>
+                        onChange={this.handleInputChange} autoComplete="off"/>
             </div>
         );
     }
