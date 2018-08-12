@@ -217,30 +217,6 @@ class MainWindow extends Component {
         if (money !== undefined) {
             money = money.replace(/,/, '')
         }
-        // if (op === "create") {
-        //     if (!lastname || !firstname || !patronymic) {
-        //         alert("Все поля должны быть заполнены!");
-        //         return;
-        //     }
-        // }
-        // if (op === "close" || op === "block") {
-        //     if (num_acc === undefined) {
-        //         alert("Все поля должны быть заполнены!");
-        //         return;
-        //     }
-        // }
-        // if (op === "transfer_minus" || op === "transfer_plus") {
-        //     if (num_acc === undefined || money === undefined) {
-        //         alert("Все поля должны быть заполнены!");
-        //         return;
-        //     }
-        // }
-        // if (op === "transfer_to") {
-        //     if (num_acc === undefined || money === undefined || second_accnum === undefined) {
-        //         alert("Все поля должны быть заполнены!");
-        //         return;
-        //     }
-        // }
 
         const sendData = {
             "type": type_action,
@@ -271,8 +247,8 @@ class MainWindow extends Component {
                 alert("Дерьмо случается!")
             });
 
+     // сделать здесь getTableView с рефрешем таблички !
     }
-
 
     getTableView(page) {
         const self = this;
@@ -286,7 +262,8 @@ class MainWindow extends Component {
         };
         axios.get(url, header)
             .then((response) => {
-                console.log(response.data)
+                console.log(response.data);
+
                 self.processData(response.data['data'])
             }).catch((error) => {
             console.log(error);
@@ -344,8 +321,8 @@ class MainWindow extends Component {
             this.getTableView(page);
         }
 
-        const pageLimit = 10;
-        if (name === "Next" && page < (state.count_rows / pageLimit) - 1) {
+        const rowsLimit = 10;
+        if (name === "Next" && page < (state.count_rows / rowsLimit) - 1) {
             state ['currentPage'] = ++page;
             this.getTableView(page);
         }
