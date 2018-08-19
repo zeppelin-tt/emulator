@@ -27,7 +27,6 @@ class MainWindow extends Component {
         this.getTableView = this.getTableView.bind(this);
         this.toggleTable = this.toggleTable.bind(this);
         this.getAccNumInput = this.getAccNumInput.bind(this);
-        this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
 
         this.getTableView(0, limitRows);
     }
@@ -140,7 +139,7 @@ class MainWindow extends Component {
                         <div className="panel-body">
                             <form onSubmit={this.handleSubmit}>
 
-                                <select className={'form-control m-b-20'} value={this.state.value}
+                                <select className={'form-control m-b-20'} name="selectAction" value={this.state.value}
                                         onChange={this.handleChange}>
                                     <option value="create">Создать счет</option>
                                     <option value="close">Закрыть счет</option>
@@ -329,10 +328,6 @@ class MainWindow extends Component {
 
         state [name] = value;
         this.setState(state);
-    }
-
-    onSetSidebarOpen(open) {
-        this.setState({ sidebarOpen: open });
     }
 
     getAccNumInput() {

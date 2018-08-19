@@ -23,7 +23,6 @@ export default class DataTable extends React.Component {
         const columns = [{
             dataField: 'accNum',
             text: 'Номер счёта',
-            title: true
         }, {
             dataField: 'initials',
             text: 'ФИО',
@@ -45,6 +44,7 @@ export default class DataTable extends React.Component {
         return (
             <div>
                 <BootstrapTable
+                    name='dataTable'
                     keyField='accNum'
                     data={ acs }
                     columns={ columns }
