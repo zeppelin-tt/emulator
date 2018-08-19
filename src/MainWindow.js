@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import DataTable from './DataTable';
-// import SideBarSearch from './sidebar/SideBarSearch';
 import axios from 'axios';
-import {css} from 'aphrodite';
-import styles from './Styles';
-//import './bootstrap.min.css'
 import Cleave from 'cleave.js/react'
+import {withAlert} from 'react-alert';
 
+
+const limitRows = 11;
 
 class MainWindow extends Component {
 
@@ -19,7 +18,8 @@ class MainWindow extends Component {
             list_table: [],
             count_rows: [],
             currentPage: 0,
-            isVisibleSidebar: false
+            isVisibleSidebar: false,
+            sidebarOpen: true
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,8 +27,9 @@ class MainWindow extends Component {
         this.getTableView = this.getTableView.bind(this);
         this.toggleTable = this.toggleTable.bind(this);
         this.getAccNumInput = this.getAccNumInput.bind(this);
+        this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
 
-        this.getTableView(0);
+        this.getTableView(0, limitRows);
     }
 
     render() {
@@ -144,8 +145,8 @@ class MainWindow extends Component {
                                     <option value="create">Создать счет</option>
                                     <option value="close">Закрыть счет</option>
                                     <option value="block">Заблокировать счет</option>
-                                    <option value="transfer_minus">Снять сумму</option>
-                                    <option value="transfer_plus">Зачислить сумму</option>
+                                    <option value="transfer_minus">Снять деньги</option>
+                                    <option value="transfer_plus">Пополнить счет</option>
                                     <option value="transfer_to">Перечислить клиенту</option>
                                 </select>
 
@@ -180,7 +181,9 @@ class MainWindow extends Component {
                 </div>
 
                 <div className="col-md-12 col-lg-9">
+
                     {table}
+
                 </div>
             </div>
         )
@@ -237,22 +240,22 @@ class MainWindow extends Component {
         };
         axios.post('http://localhost:8080/rest/account/action', JSON.stringify(sendData), header)
             .then((response) => {
+                console.log(response);
                 if (response.data['success'] === 'true') {
-                    alert("Операция " + this.state.text + " выполнена успешно!")
+                    this.props.alert.success("Операция " + this.state.text + " выполнена успешно!");
+                    this.getTableView(0, limitRows)
                 } else {
-                    alert(response.data['message'])
+                    this.props.alert.error(response.data['errorMessage']);
                 }
             })
             .catch((error) => {
-                alert("Дерьмо случается!")
+                this.props.alert.error("Возникли технические проблемы с обработкой запроса. Попробуйте завтра.");
             });
-
-     // сделать здесь getTableView с рефрешем таблички !
     }
 
-    getTableView(page) {
+    getTableView(page, limitRows) {
         const self = this;
-        const url = `http://localhost:8080/rest/account/view/${page}`;
+        const url = `http://localhost:8080/rest/account/view/page=${page}&limitRows=${limitRows}`;
         const header = {
             headers:
                 {
@@ -262,12 +265,9 @@ class MainWindow extends Component {
         };
         axios.get(url, header)
             .then((response) => {
-                console.log(response.data);
-
                 self.processData(response.data['data'])
             }).catch((error) => {
-            console.log(error);
-            alert("Дерьмо случается и с табличкой!")
+            this.props.alert.error("Возникли технические проблемы с обработкой таблицы. Попробуйте завтра.");
         });
     }
 
@@ -292,20 +292,20 @@ class MainWindow extends Component {
         };
         axios.post(url, JSON.stringify(filterData), header)
             .then((response) => {
-                console.log(response.data)
                 self.processData(response.data['data'])
             }).catch((error) => {
-            console.log(error);
-            alert("Дерьмо случается и с табличкой!")
+            this.props.alert.error("Возникли технические проблемы с обработкой таблицы. Попробуйте завтра.");
         });
     }
 
+    // onSearchChange(event) { this.setState({ searchTerm: event.target.value }); }
 
     processData(data) {
         this.setState({
             list_table: data['view'],
             count_rows: data['countRows']
         });
+        console.log(data['view'])
     }
 
     handleInputChange(event) {
@@ -318,17 +318,21 @@ class MainWindow extends Component {
         let page = state.currentPage;
         if (name === "Prev" && page > 0) {
             state ['currentPage'] = --page;
-            this.getTableView(page);
+            this.getTableView(page, limitRows);
         }
 
         const rowsLimit = 10;
         if (name === "Next" && page < (state.count_rows / rowsLimit) - 1) {
             state ['currentPage'] = ++page;
-            this.getTableView(page);
+            this.getTableView(page, limitRows);
         }
 
         state [name] = value;
         this.setState(state);
+    }
+
+    onSetSidebarOpen(open) {
+        this.setState({ sidebarOpen: open });
     }
 
     getAccNumInput() {
@@ -342,4 +346,4 @@ class MainWindow extends Component {
     }
 }
 
-export default MainWindow;
+export default withAlert(MainWindow);

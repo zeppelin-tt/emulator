@@ -7,9 +7,6 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 
 export default class DataTable extends React.Component {
 
-    // getFilters() {
-    //     const initials_filterl;
-    // }
 
     render() {
         const acs = this.props.listTable;
@@ -55,6 +52,5 @@ export default class DataTable extends React.Component {
             </div>
         )
     }
-
 
 }
