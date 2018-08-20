@@ -15,6 +15,7 @@ class MainWindow extends Component {
             text: 'Создать счёт',
             value: 'create',
             tableOn: true,
+            hideAccnums: true,
             list_table: [],
             count_rows: [],
             currentPage: 0,
@@ -27,8 +28,9 @@ class MainWindow extends Component {
         this.getTableView = this.getTableView.bind(this);
         this.toggleTable = this.toggleTable.bind(this);
         this.getAccNumInput = this.getAccNumInput.bind(this);
+        this.hideClosedAccs = this.hideClosedAccs.bind(this);
 
-        this.getTableView(0, limitRows);
+        this.getTableView(0, limitRows, true);
     }
 
     render() {
@@ -156,7 +158,7 @@ class MainWindow extends Component {
                                 </div>
                             </form>
 
-                            <div style={{'marginBottom': '0px'}}>
+                            <div style={{'marginBottom': '15px'}}>
                                 {
                                     this.state.tableOn ? (
                                         <div>
@@ -170,6 +172,25 @@ class MainWindow extends Component {
                                             <button className={'btn btn-success btn-outline'} onClick={function () {
                                                 self.toggleTable('test');
                                             }}>Открыть таблицу
+                                            </button>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                            <div style={{'marginBottom': '0px'}}>
+                                {
+                                    this.state.hideAccnums ? (
+                                        <div>
+                                            <button className={'btn btn-warning btn-outline'} onClick={function () {
+                                                self.hideClosedAccs('test');
+                                            }}>Показать закрытые
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <button className={'btn btn-success btn-outline'} onClick={function () {
+                                                self.hideClosedAccs('test');
+                                            }}>Показать все
                                             </button>
                                         </div>
                                     )
@@ -192,6 +213,13 @@ class MainWindow extends Component {
         let state = this.state;
         state.tableOn = !state.tableOn;
         this.setState(state);
+    }
+
+    hideClosedAccs(param) {
+        let state = this.state;
+        state.hideAccnums = !state.hideAccnums;
+        this.setState(state);
+        this.getTableView(0, limitRows, state.hideAccnums)
     }
 
     handleChange(event) {
@@ -242,7 +270,7 @@ class MainWindow extends Component {
                 console.log(response);
                 if (response.data['success'] === 'true') {
                     this.props.alert.success("Операция " + this.state.text + " выполнена успешно!");
-                    this.getTableView(0, limitRows)
+                    this.getTableView(0, limitRows, this.state.hideAccnums)
                 } else {
                     this.props.alert.error(response.data['errorMessage']);
                 }
@@ -252,9 +280,9 @@ class MainWindow extends Component {
             });
     }
 
-    getTableView(page, limitRows) {
+    getTableView(page, limitRows, hideClosed) {
         const self = this;
-        const url = `http://localhost:8080/rest/account/view/page=${page}&limitRows=${limitRows}`;
+        const url = `http://localhost:8080/rest/account/view/page=${page}&limitRows=${limitRows}&hideClosed=${hideClosed}`;
         const header = {
             headers:
                 {
@@ -317,13 +345,13 @@ class MainWindow extends Component {
         let page = state.currentPage;
         if (name === "Prev" && page > 0) {
             state ['currentPage'] = --page;
-            this.getTableView(page, limitRows);
+            this.getTableView(page, limitRows, this.state.hideAccnums);
         }
 
         const rowsLimit = 10;
         if (name === "Next" && page < (state.count_rows / rowsLimit) - 1) {
             state ['currentPage'] = ++page;
-            this.getTableView(page, limitRows);
+            this.getTableView(page, limitRows, this.state.hideAccnums);
         }
 
         state [name] = value;
