@@ -6,6 +6,8 @@ import {withAlert} from 'react-alert';
 
 
 const limitRows = 11;
+const domainUrl = 'http://localhost:8080';
+
 
 class MainWindow extends Component {
 
@@ -265,7 +267,7 @@ class MainWindow extends Component {
                     Accept: 'application/json'
                 }
         };
-        axios.post('http://localhost:8080/rest/account/action', JSON.stringify(sendData), header)
+        axios.post(domainUrl + '/rest/account/action', JSON.stringify(sendData), header)
             .then((response) => {
                 console.log(response);
                 if (response.data['success'] === 'true') {
@@ -282,7 +284,7 @@ class MainWindow extends Component {
 
     getTableView(page, limitRows, hideClosed) {
         const self = this;
-        const url = `http://localhost:8080/rest/account/view/page=${page}&limitRows=${limitRows}&hideClosed=${hideClosed}`;
+        const url = domainUrl + `/rest/account/view/page=${page}&limitRows=${limitRows}&hideClosed=${hideClosed}`;
         const header = {
             headers:
                 {
@@ -309,7 +311,7 @@ class MainWindow extends Component {
             "money": ""
         };
 
-        const url = `http://localhost:8080/rest/account/filter`;
+        const url = domainUrl + `/rest/account/filter`;
         const header = {
             headers:
                 {
