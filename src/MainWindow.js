@@ -30,6 +30,7 @@ class MainWindow extends Component {
         this.getTableView = this.getTableView.bind(this);
         this.toggleTable = this.toggleTable.bind(this);
         this.getAccNumInput = this.getAccNumInput.bind(this);
+        this.getSum = this.getSum.bind(this);
         this.hideClosedAccs = this.hideClosedAccs.bind(this);
 
         this.getTableView(0, limitRows, true);
@@ -40,6 +41,7 @@ class MainWindow extends Component {
         let rows = [];
         let table;
         let accNum = this.getAccNumInput();
+        let sum = this.getSum();
 
         switch (this.state.value) {
             case "create": {
@@ -68,13 +70,7 @@ class MainWindow extends Component {
                 rows.push(
                     <div key={'row_' + rows.length}>
                         {accNum}
-                    </div>
-                );
-                rows.push(
-                    <div key={'row_' + rows.length} className={'m-b-20'}>
-                        <Cleave name="resources" className={'form-control'}
-                                options={{numeral: true, numeralIntegerScale: 6}} type="text" autoComplete="off"
-                                placeholder="Сумма, руб." onChange={this.handleInputChange}/>
+                        {sum}
                     </div>
                 );
                 break;
@@ -83,20 +79,15 @@ class MainWindow extends Component {
                 rows.push(
                     <div key={'row_' + rows.length}>
                         {accNum}
+                        <label>Счет получателя</label>
+                        <input className={'form-control m-b-20'} name="second_accnum" type="text"
+                               placeholder="Введите счет получателя" autoComplete="off"
+                               onChange={this.handleInputChange}/>
                     </div>
                 );
                 rows.push(
-                    <div key={'row_' + rows.length} className={'m-b-20'}>
-                        <Cleave name="second_accnum" className={'form-control'} options={{creditCard: true}} type="text"
-                                placeholder="Счет получателя" autoComplete="off"
-                                onChange={this.handleInputChange}/>
-                    </div>
-                );
-                rows.push(
-                    <div key={'row_' + rows.length} className={'m-b-20'}>
-                        <Cleave name="resources" className={'form-control'}
-                                options={{numeral: true, numeralIntegerScale: 6}} type="text"
-                                placeholder="Сумма, руб." onChange={this.handleInputChange} autoComplete="off"/>
+                    <div key={'row_' + rows.length}>
+                        {sum}
                     </div>
                 );
                 break;
@@ -235,13 +226,13 @@ class MainWindow extends Component {
         const op = this.state.value;
         let type_action = this.state.value;
         let num_acc = this.state.accnum;
-        if (num_acc) {
-            num_acc = num_acc.replace(/ /g, '')
-        }
+        // if (num_acc) {
+        //     num_acc = num_acc.replace(/ /g, '')
+        // }
         let second_accnum = this.state.second_accnum;
-        if (second_accnum !== undefined) {
-            second_accnum = second_accnum.replace(/ /g, '')
-        }
+        // if (second_accnum !== undefined) {
+        //     second_accnum = second_accnum.replace(/ /g, '')
+        // }
         let lastname = this.state.lastname;
         let firstname = this.state.firstname;
         let patronymic = this.state.secondname;
@@ -327,8 +318,6 @@ class MainWindow extends Component {
         });
     }
 
-    // onSearchChange(event) { this.setState({ searchTerm: event.target.value }); }
-
     processData(data) {
         this.setState({
             list_table: data['view'],
@@ -363,9 +352,21 @@ class MainWindow extends Component {
     getAccNumInput() {
         return (
             <div className={'m-b-20'}>
-                <Cleave name="accnum" className={'form-control'} options={{creditCard: true}} type="text"
-                        placeholder="Счет клиента"
-                        onChange={this.handleInputChange} autoComplete="off"/>
+                <label>Счет клиента</label>
+                <input name="accnum" className={'form-control'} options={{creditCard: true}} type="text"
+                       placeholder="Введите счет клиента"
+                       onChange={this.handleInputChange} autoComplete="off"/>
+            </div>
+        );
+    }
+
+    getSum() {
+        return (
+            <div className={'m-b-20'}>
+                <label>Сумма, руб.</label>
+                <Cleave name="resources" className={'form-control'}
+                        options={{numeral: true, numeralIntegerScale: 6}} type="text"
+                        placeholder="Введите сумму, руб." onChange={this.handleInputChange} autoComplete="off"/>
             </div>
         );
     }
