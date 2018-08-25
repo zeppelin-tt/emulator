@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
-import DataTable from './DataTable';
-import axios from 'axios';
+import React, {Component} from 'react'
+import DataTable from './DataTable'
+import axios from 'axios'
 import Cleave from 'cleave.js/react'
-import {withAlert} from 'react-alert';
+import {withAlert} from 'react-alert'
+import MaskedInput from 'react-text-mask'
 
 
 const limitRows = 11;
@@ -48,19 +49,34 @@ class MainWindow extends Component {
                 rows.push(
                     <div key={'row_' + rows.length} className={'form-group'}>
                         <label>Фамилия</label>
-                        <input className={'form-control m-b-20'} name="lastname" type="text"
-                               placeholder="Введите фамилию" required={true} maxLength={30} autoComplete="off"
-                               onChange={this.handleInputChange}/>
+                        <input className={'form-control m-b-20'}
+                                     name="lastname"
+                                     type="text"
+                                     placeholder="Введите фамилию"
+                                     required={true}
+                                     maxLength={30}
+                                     autoComplete="off"
+                                     onChange={this.handleInputChange}/>
 
                         <label>Имя</label>
-                        <input className={'form-control m-b-20'} name="firstname" type="text" placeholder="Введите имя"
-                               required={true} maxLength={30} autoComplete="off"
-                               onChange={this.handleInputChange}/>
+                        <input className={'form-control m-b-20'}
+                                     name="firstname"
+                                     type="text"
+                                     placeholder="Введите имя"
+                                     required={true}
+                                     maxLength={30}
+                                     autoComplete="off"
+                                     onChange={this.handleInputChange}/>
 
                         <label>Отчество</label>
-                        <input className={'form-control m-b-20'} name="secondname" type="text" required={true}
-                               maxLength={30} autoComplete="off"
-                               placeholder="Введите отчество" onChange={this.handleInputChange}/>
+                        <input className={'form-control m-b-20'}
+                                     name="secondname"
+                                     type="text"
+                                     required={true}
+                                     maxLength={30}
+                                     autoComplete="off"
+                                     placeholder="Введите отчество"
+                                     onChange={this.handleInputChange}/>
                     </div>
                 );
                 break;
@@ -80,9 +96,14 @@ class MainWindow extends Component {
                     <div key={'row_' + rows.length}>
                         {accNum}
                         <label>Счет получателя</label>
-                        <input className={'form-control m-b-20'} name="second_accnum" type="text"
-                               placeholder="Введите счет получателя" autoComplete="off"
-                               onChange={this.handleInputChange}/>
+                        <MaskedInput className={'form-control m-b-20'}
+                                     name="second_accnum"
+                                     type="text"
+                                     required={true}
+                                     placeholder="Введите счет получателя"
+                                     mask={[/\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/]}
+                                     autoComplete="off"
+                                     onChange={this.handleInputChange}/>
                     </div>
                 );
                 rows.push(
@@ -136,11 +157,11 @@ class MainWindow extends Component {
 
                                 <select className={'form-control m-b-20'} name="selectAction" value={this.state.value}
                                         onChange={this.handleChange}>
-                                    <option value="create">Создать счет</option>
-                                    <option value="close">Закрыть счет</option>
-                                    <option value="block">Заблокировать счет</option>
+                                    <option value="create">Создать счёт</option>
+                                    <option value="close">Закрыть счёт</option>
+                                    <option value="block">Заблокировать счёт</option>
                                     <option value="transfer_minus">Снять деньги</option>
-                                    <option value="transfer_plus">Пополнить счет</option>
+                                    <option value="transfer_plus">Пополнить счёт</option>
                                     <option value="transfer_to">Перечислить клиенту</option>
                                 </select>
 
@@ -226,19 +247,20 @@ class MainWindow extends Component {
         const op = this.state.value;
         let type_action = this.state.value;
         let num_acc = this.state.accnum;
-        // if (num_acc) {
-        //     num_acc = num_acc.replace(/ /g, '')
-        // }
+        if (num_acc) {
+            num_acc = num_acc.replace(/ /g, '')
+        }
         let second_accnum = this.state.second_accnum;
-        // if (second_accnum !== undefined) {
-        //     second_accnum = second_accnum.replace(/ /g, '')
-        // }
+        if (second_accnum !== undefined) {
+            second_accnum = second_accnum.replace(/ /g, '')
+        }
         let lastname = this.state.lastname;
         let firstname = this.state.firstname;
         let patronymic = this.state.secondname;
         let money = this.state.resources;
         if (money !== undefined) {
-            money = money.replace(/,/, '')
+            money = money.replace(/,/, '').replace(/,/, '')
+            console.log(money)
         }
 
         const sendData = {
@@ -353,9 +375,15 @@ class MainWindow extends Component {
         return (
             <div className={'m-b-20'}>
                 <label>Счет клиента</label>
-                <input name="accnum" className={'form-control'} options={{creditCard: true}} type="text"
-                       placeholder="Введите счет клиента"
-                       onChange={this.handleInputChange} autoComplete="off"/>
+                <MaskedInput name="accnum"
+                             className={'form-control'}
+                             options={{creditCard: true}}
+                             required={true}
+                             type="text"
+                             mask={[/\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/]}
+                             placeholder="Введите счет клиента"
+                             onChange={this.handleInputChange}
+                             autoComplete="off"/>
             </div>
         );
     }
@@ -364,9 +392,18 @@ class MainWindow extends Component {
         return (
             <div className={'m-b-20'}>
                 <label>Сумма, руб.</label>
-                <Cleave name="resources" className={'form-control'}
-                        options={{numeral: true, numeralIntegerScale: 6}} type="text"
-                        placeholder="Введите сумму, руб." onChange={this.handleInputChange} autoComplete="off"/>
+                <Cleave name="resources"
+                        className={'form-control'}
+                        options={{
+                            numeral: true,
+                            numeralIntegerScale: 7,
+                            numeralPositiveOnly: true
+                        }}
+                        required={true}
+                        type="text"
+                        placeholder="Введите сумму, руб."
+                        onChange={this.handleInputChange}
+                        autoComplete="off"/>
             </div>
         );
     }
