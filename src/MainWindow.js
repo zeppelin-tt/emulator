@@ -204,7 +204,7 @@ class MainWindow extends Component {
                                         <div>
                                             <button className={'btn btn-success btn-outline'} onClick={function () {
                                                 self.hideClosedAccs('test');
-                                            }}>Показать все
+                                            }}>Скрыть закрытые
                                             </button>
                                         </div>
                                     )
