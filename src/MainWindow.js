@@ -248,18 +248,18 @@ class MainWindow extends Component {
         let type_action = this.state.value;
         let num_acc = this.state.accnum;
         if (num_acc) {
-            num_acc = num_acc.replace(/ /g, '')
+            num_acc = num_acc.replace(/ /g, '').replace(/_/g, '')
         }
         let second_accnum = this.state.second_accnum;
         if (second_accnum !== undefined) {
-            second_accnum = second_accnum.replace(/ /g, '')
+            second_accnum = second_accnum.replace(/ /g, '').replace(/_/g, '')
         }
         let lastname = this.state.lastname;
         let firstname = this.state.firstname;
         let patronymic = this.state.secondname;
         let money = this.state.resources;
         if (money !== undefined) {
-            money = money.replace(/,/, '').replace(/,/, '')
+            money = money.replace(/,/g, '')
             console.log(money)
         }
 
