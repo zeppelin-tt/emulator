@@ -4,7 +4,7 @@ import axios from 'axios'
 import Cleave from 'cleave.js/react'
 import {withAlert} from 'react-alert'
 import MaskedInput from 'react-text-mask'
-
+import './style.css'
 
 const limitRows = 11;
 const domainUrl = 'http://localhost:8080';
@@ -17,6 +17,9 @@ class MainWindow extends Component {
         this.state = {
             text: 'Создать счёт',
             value: 'create',
+            lastName: '',
+            firstName: '',
+            secondName: '',
             tableOn: true,
             hideAccnums: true,
             list_table: [],
@@ -33,6 +36,7 @@ class MainWindow extends Component {
         this.getAccNumInput = this.getAccNumInput.bind(this);
         this.getSum = this.getSum.bind(this);
         this.hideClosedAccs = this.hideClosedAccs.bind(this);
+        this.onChangeInputInitials = this.onChangeInputInitials.bind(this);
 
         this.getTableView(0, limitRows, true);
     }
@@ -49,34 +53,35 @@ class MainWindow extends Component {
                 rows.push(
                     <div key={'row_' + rows.length} className={'form-group'}>
                         <label>Фамилия</label>
-                        <input className={'form-control m-b-20'}
-                                     name="lastname"
-                                     type="text"
-                                     placeholder="Введите фамилию"
-                                     required={true}
-                                     maxLength={30}
-                                     autoComplete="off"
-                                     onChange={this.handleInputChange}/>
-
+                        <input className={'form-control text-capitalize m-b-20'}
+                               name="lastname"
+                               value={this.state.lastName}
+                               type="text"
+                               placeholder="Введите фамилию"
+                               required={true}
+                               maxLength={30}
+                               autoComplete="off"
+                               onChange={this.onChangeInputInitials}/>
                         <label>Имя</label>
-                        <input className={'form-control m-b-20'}
-                                     name="firstname"
-                                     type="text"
-                                     placeholder="Введите имя"
-                                     required={true}
-                                     maxLength={30}
-                                     autoComplete="off"
-                                     onChange={this.handleInputChange}/>
-
+                        <input className={'form-control text-capitalize m-b-20'}
+                               name="firstname"
+                               value={this.state.firstName}
+                               type="text"
+                               placeholder="Введите имя"
+                               required={true}
+                               maxLength={30}
+                               autoComplete="off"
+                               onChange={this.onChangeInputInitials}/>
                         <label>Отчество</label>
-                        <input className={'form-control m-b-20'}
-                                     name="secondname"
-                                     type="text"
-                                     required={true}
-                                     maxLength={30}
-                                     autoComplete="off"
-                                     placeholder="Введите отчество"
-                                     onChange={this.handleInputChange}/>
+                        <input className={'form-control text-capitalize m-b-20'}
+                               name="secondname"
+                               value={this.state.secondName}
+                               type="text"
+                               required={true}
+                               maxLength={30}
+                               autoComplete="off"
+                               placeholder="Введите отчество"
+                               onChange={this.onChangeInputInitials}/>
                     </div>
                 );
                 break;
@@ -244,7 +249,6 @@ class MainWindow extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        const op = this.state.value;
         let type_action = this.state.value;
         let num_acc = this.state.accnum;
         if (num_acc) {
@@ -254,13 +258,12 @@ class MainWindow extends Component {
         if (second_accnum !== undefined) {
             second_accnum = second_accnum.replace(/ /g, '').replace(/_/g, '')
         }
-        let lastname = this.state.lastname;
-        let firstname = this.state.firstname;
-        let patronymic = this.state.secondname;
+        let lastname = this.state.lastName.charAt(0).toUpperCase() + this.state.lastName.substr(1);
+        let firstname = this.state.firstName.charAt(0).toUpperCase() + this.state.firstName.substr(1);
+        let patronymic = this.state.secondName.charAt(0).toUpperCase() + this.state.secondName.substr(1);
         let money = this.state.resources;
         if (money !== undefined) {
             money = money.replace(/,/g, '')
-            console.log(money)
         }
 
         const sendData = {
@@ -282,7 +285,6 @@ class MainWindow extends Component {
         };
         axios.post(domainUrl + '/rest/account/action', JSON.stringify(sendData), header)
             .then((response) => {
-                console.log(response);
                 if (response.data['success'] === 'true') {
                     this.props.alert.success("Операция " + this.state.text + " выполнена успешно!");
                     this.getTableView(0, limitRows, this.state.hideAccnums)
@@ -345,7 +347,21 @@ class MainWindow extends Component {
             list_table: data['view'],
             count_rows: data['countRows']
         });
-        console.log(data['view'])
+    }
+
+    onChangeInputInitials(event) {
+        const regEx = /^[A-ZА-Яёа-яa-z-]+$/;
+        if (event.target.value === '' || regEx.test(event.target.value)) {
+            if (event.target.name === "lastname") {
+                this.setState({lastName: event.target.value});
+            }
+            if (event.target.name === "firstname") {
+                this.setState({firstName: event.target.value});
+            }
+            if (event.target.name === "secondname") {
+                this.setState({secondName: event.target.value});
+            }
+        }
     }
 
     handleInputChange(event) {
@@ -357,17 +373,17 @@ class MainWindow extends Component {
 
         let page = state.currentPage;
         if (name === "Prev" && page > 0) {
-            state ['currentPage'] = --page;
+            state['currentPage'] = --page;
             this.getTableView(page, limitRows, this.state.hideAccnums);
         }
 
         const rowsLimit = 10;
         if (name === "Next" && page < (state.count_rows / rowsLimit) - 1) {
-            state ['currentPage'] = ++page;
+            state['currentPage'] = ++page;
             this.getTableView(page, limitRows, this.state.hideAccnums);
         }
 
-        state [name] = value;
+        state[name] = value;
         this.setState(state);
     }
 

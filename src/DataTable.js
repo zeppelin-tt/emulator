@@ -1,16 +1,12 @@
 import React from 'react';
-// import filterFactory, {textFilter}
-// from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 
 
 export default class DataTable extends React.Component {
 
-
     render() {
         const acs = this.props.listTable;
-        const countRows = this.props.countRows;
 
         if (!acs.length) {
             return (
@@ -39,7 +35,6 @@ export default class DataTable extends React.Component {
             dataField: 'createTime',
             text: 'Время создания счёта',
         }];
-
 
         return (
             <div>
